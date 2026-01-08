@@ -1,13 +1,15 @@
 annotations:
   - border_color: '#B4373700'
     border_style: ''
-    color: '#808080FF'
+    color: '#333333'
     rotation: 0
     text_bold: true
     text_content: |-
       E0/0: 172.27.12.1/24
       E0/1: 172.27.13.1/24
       Lo0: 1.1.1.1/32
+
+      E0/2: 10.1.1.201/24 (MGMT VRF)
     text_font: monospace
     text_italic: false
     text_size: 12
@@ -19,7 +21,7 @@ annotations:
     z_index: 8
   - border_color: '#00000000'
     border_style: ''
-    color: '#808080FF'
+    color: '#333333'
     rotation: 0
     text_bold: true
     text_content: |-
@@ -27,7 +29,7 @@ annotations:
       E0/1: 172.27.23.2/24
       Lo0: 2.2.2.2
 
-      E0/2: 10.100.0.1/24
+      E0/2: 10.1.1.202/24 (MGMT VRF)
     text_font: monospace
     text_italic: false
     text_size: 12
@@ -39,13 +41,15 @@ annotations:
     z_index: 1
   - border_color: '#00000000'
     border_style: ''
-    color: '#808080FF'
+    color: '#333333'
     rotation: 0
     text_bold: true
     text_content: |-
       E0/0: 172.27.13.3/24
       E0/1: 172.27.23.3/24
       Lo0: 3.3.3.3/32
+
+      E0/2: 10.1.1.203/24 (MGMT VRF)
     text_font: monospace
     text_italic: false
     text_size: 12
@@ -61,10 +65,10 @@ annotations:
     rotation: 0
     thickness: 1
     type: ellipse
-    x1: 0.0
-    y1: -240.0
-    x2: 200.0
-    y2: 80.0
+    x1: 60.0
+    y1: -220.0
+    x2: 260.0
+    y2: 100.0
     z_index: 0
   - border_color: '#808080FF'
     border_style: ''
@@ -72,10 +76,10 @@ annotations:
     rotation: 0
     thickness: 1
     type: ellipse
-    x1: 160.0
-    y1: 0.0
-    x2: 200.0
-    y2: 80.0
+    x1: 200.0
+    y1: 20.0
+    x2: 240.0
+    y2: 100.0
     z_index: 1
   - border_color: '#808080FF'
     border_style: ''
@@ -83,40 +87,11 @@ annotations:
     rotation: 0
     thickness: 1
     type: ellipse
-    x1: -320.0
+    x1: -300.0
     y1: 20.0
-    x2: 200.0
+    x2: 220.0
     y2: 100.0
     z_index: 0
-  - border_color: '#00000000'
-    border_style: ''
-    color: '#808080FF'
-    rotation: 0
-    text_bold: true
-    text_content: |-
-      CodeServer: https://10.100.0.10:8443
-      Access via Chrome Container
-    text_font: monospace
-    text_italic: false
-    text_size: 12
-    text_unit: pt
-    thickness: 1
-    type: text
-    x1: -510.6274577954337
-    y1: 304.9363145481746
-    z_index: 9
-  - border_color: '#808080FF'
-    border_radius: 0
-    border_style: ''
-    color: '#E460CF3F'
-    rotation: 0
-    thickness: 1
-    type: rectangle
-    x1: -534.871204757095
-    y1: 287.89080827453154
-    x2: 385.4457981627776
-    y2: 76.15190541209893
-    z_index: 1
   - border_color: '#00000000'
     border_style: ''
     color: '#808080FF'
@@ -134,8 +109,8 @@ annotations:
     text_unit: pt
     thickness: 1
     type: text
-    x1: 240.0
-    y1: -240.0
+    x1: 320.0
+    y1: -200.0
     z_index: 10
   - border_color: '#00000000'
     border_style: ''
@@ -175,11 +150,13 @@ annotations:
     text_content: |-
       Base topology from which we will use common Python-based network automation libraries
       to automate network configurations.
-      All work will be done using VSCode Server (web-based VSCode instance) and all
+      All work will be done using VSCode locally on your jumphost and all
       libraries have been preinstalled, along with the skeleton code.
 
-      The network topology is given below, and to access the VSCode, use the VNC function
-      on the Chrome container and access the CodeServer UI at the address given in the diagram.
+      The network topology is given below.
+      Please exercise caution.
+      E0/2 on each router is the MGMT interface connecting the routers to the network
+      outside of Cisco Modeling Labs.
     text_font: monospace
     text_italic: false
     text_size: 18
@@ -189,36 +166,6 @@ annotations:
     x1: -680.0
     y1: -600.0
     z_index: 13
-  - border_color: '#808080FF'
-    border_radius: 0
-    border_style: ''
-    color: '#9FF8FC'
-    rotation: 0
-    thickness: 1
-    type: rectangle
-    x1: -120.0
-    y1: 200.0
-    x2: 400.0
-    y2: 80.0
-    z_index: 14
-  - border_color: '#00000000'
-    border_style: ''
-    color: '#808080FF'
-    rotation: 0
-    text_bold: false
-    text_content: |-
-      Right click on "Chrome"
-      Click on VNC
-      Enter CodeServer IP in address bar
-    text_font: monospace
-    text_italic: false
-    text_size: 12
-    text_unit: pt
-    thickness: 1
-    type: text
-    x1: -82.3431355511415
-    y1: 207.0294066534245
-    z_index: 15
 smart_annotations:
   - tag: OSPF1
     is_on: true
@@ -273,6 +220,15 @@ nodes:
           !
           no cdp run
           !
+          vrf definition MGMT
+           rd 1:1
+           !
+           address-family ipv4
+           exit-address-family
+           !
+           address-family ipv6
+           exit-address-family
+          !
           router ospf 1
               router-id 1.1.1.1
           !
@@ -292,14 +248,16 @@ nodes:
               ip ospf 1 area 0.0.0.0
               no shutdown
           interface Ethernet0/2
-              description not connected
-              no ip address
-              shutdown
+              description *EXTERNAL - DO NOT MODIFY*
+              vrf forwarding MGMT
+              ip address 10.1.1.201 255.255.255.0
+              no shutdown
           interface Ethernet0/3
               description not connected
               no ip address
               shutdown
           !
+          ip route vrf MGMT 0.0.0.0 0.0.0.0 10.1.1.1
           !
           end
     cpu_limit: null
@@ -380,6 +338,15 @@ nodes:
           !
           no cdp run
           !
+          vrf definition MGMT
+           rd 1:1
+           !
+           address-family ipv4
+           exit-address-family
+           !
+           address-family ipv6
+           exit-address-family
+          !
           router ospf 1
               router-id 2.2.2.2
           !
@@ -399,15 +366,16 @@ nodes:
               ip ospf 1 area 0.0.0.0
               no shutdown
           interface Ethernet0/2
-              description to port0.Breakout0
-              ip address 10.100.0.1 255.255.255.0
-              ip ospf 1 area 0.0.0.0
+              description *EXTERNAL - DO NOT MODIFY*
+              vrf forwarding MGMT
+              ip address 10.1.1.202 255.255.255.0
               no shutdown
           interface Ethernet0/3
               description not connected
               no ip address
               shutdown
           !
+          ip route vrf MGMT 0.0.0.0 0.0.0.0 10.1.1.1
           !
           end
     cpu_limit: null
@@ -488,6 +456,15 @@ nodes:
           !
           no cdp run
           !
+          vrf definition MGMT
+           rd 1:1
+           !
+           address-family ipv4
+           exit-address-family
+           !
+           address-family ipv6
+           exit-address-family
+          !
           router ospf 1
               router-id 3.3.3.3
           !
@@ -507,14 +484,16 @@ nodes:
               ip ospf 1 area 0.0.0.0
               no shutdown
           interface Ethernet0/2
-              description not connected
-              no ip address
-              shutdown
+              description *EXTERNAL - DO NOT MODIFY*
+              vrf forwarding MGMT
+              ip address 10.1.1.203 255.255.255.0
+              no shutdown
           interface Ethernet0/3
               description not connected
               no ip address
               shutdown
           !
+          ip route vrf MGMT 0.0.0.0 0.0.0.0 10.1.1.1
           !
           end
     cpu_limit: null
@@ -558,104 +537,21 @@ nodes:
         slot: 3
   - boot_disk_size: null
     configuration:
-      - name: boot.sh
-        content: |-
-          # The following commands will run at boot.
-          # Note: Suggested that eth0 be connected to ext-conn for
-          #       internet access to reach locations such as GitHub
-          #       and PyPi. Leave eth0 gaining IP from DHCP. Add
-          #       second interface (eth1) for reachability to
-          #       "lab networks"
-
-          # Examples :
-          #  - Static IP address, routes, and DNS server
-          ip address add dev eth1 10.100.0.10/24
-          ip route add 172.27.0.0/16 via 10.100.0.1
-          ip link set dev eth1 up
-          # echo "nameserver 192.168.10.11" >> /etc/resolv.conf
-
-          #  - Clone something from Source Control
-          # If the container is getting its IP via DHCP, uncomment
-          # this sleep to ensure the DHCP process completes before
-          # attempting to clone the repo
-          # sleep 10
-          #    Recommend placing code in the /app/code directory for default workspace
-          # cd /app/code
-          #    Do the clone as the user "abc", which is the code-server user
-          # sudo -u abc git clone {REPO_ADDRESS}
-          #    Install Python requirements file into the container virtual environment
-          #     Note: Depending on internet speed and number of requirements, the
-          #              installation can take significant time to complete.
-          # sudo -u abc /app/code/.venv/bin/python -m pip install -r {PROJECT_FOLDER}/requirements.txt
-
-          # End the script cleanly
-          exit 0
+      - name: default
+        content: System Bridge
     cpu_limit: null
     cpus: null
     data_volume: null
-    hide_links: false
+    hide_links: true
     id: n3
-    image_definition: null
-    label: CodeServer
-    node_definition: code-server-custom-4.102
-    parameters: {}
-    ram: null
-    tags: []
-    x: -320
-    y: 240
-    interfaces:
-      - id: i0
-        label: eth0
-        mac_address: null
-        type: physical
-        slot: 0
-      - id: i1
-        label: eth1
-        mac_address: null
-        type: physical
-        slot: 1
-  - boot_disk_size: null
-    configuration:
-      - name: boot.sh
-        content: |-
-          # insert commands here, e.g. a static IP address
-          ip address add dev eth0 10.100.0.11/24
-          ip link set dev eth0 up
-          exit 0
-    cpu_limit: null
-    cpus: null
-    data_volume: null
-    hide_links: false
-    id: n4
-    image_definition: null
-    label: Chrome
-    node_definition: chrome
-    parameters: {}
-    ram: null
-    tags: []
-    x: -160
-    y: 240
-    interfaces:
-      - id: i0
-        label: eth0
-        mac_address: null
-        type: physical
-        slot: 0
-  - boot_disk_size: null
-    configuration: []
-    cpu_limit: null
-    cpus: null
-    data_volume: null
-    hide_links: false
-    id: n5
     image_definition: null
     label: Internet
     node_definition: external_connector
     parameters: {}
     ram: null
     tags: []
-    x: -520
-    y: 240
+    x: -440
+    y: -200
     interfaces:
       - id: i0
         label: port
@@ -667,16 +563,16 @@ nodes:
     cpu_limit: null
     cpus: null
     data_volume: null
-    hide_links: false
-    id: n6
+    hide_links: true
+    id: n4
     image_definition: null
     label: Breakout0
     node_definition: unmanaged_switch
     parameters: {}
     ram: null
     tags: []
-    x: -240
-    y: 120
+    x: -280
+    y: -160
     interfaces:
       - id: i0
         label: port0
@@ -718,6 +614,11 @@ nodes:
         mac_address: null
         type: physical
         slot: 7
+      - id: i8
+        label: port8
+        mac_address: null
+        type: physical
+        slot: 8
 links:
   - id: l0
     n1: n0
@@ -741,33 +642,33 @@ links:
     conditioning: {}
     label: R2-Ethernet0/1<->R3-Ethernet0/1
   - id: l3
-    n1: n1
-    n2: n6
-    i1: i3
-    i2: i0
-    conditioning: {}
-    label: R2-Ethernet0/2<->Breakout0-port0
-  - id: l4
-    n1: n6
-    n2: n4
-    i1: i2
-    i2: i0
-    conditioning: {}
-    label: Breakout0-port2<->Chrome-eth0
-  - id: l5
-    n1: n3
-    n2: n5
+    n1: n4
+    n2: n0
     i1: i0
+    i2: i3
+    conditioning: {}
+    label: Breakout0-port0<->R1-Ethernet0/2
+  - id: l4
+    n1: n4
+    n2: n1
+    i1: i1
+    i2: i3
+    conditioning: {}
+    label: Breakout0-port1<->R2-Ethernet0/2
+  - id: l5
+    n1: n4
+    n2: n2
+    i1: i2
+    i2: i3
+    conditioning: {}
+    label: Breakout0-port2<->R3-Ethernet0/2
+  - id: l6
+    n1: n4
+    n2: n3
+    i1: i8
     i2: i0
     conditioning: {}
-    label: CodeServer-eth0<->Internet-port
-  - id: l6
-    n1: n3
-    n2: n6
-    i1: i1
-    i2: i1
-    conditioning: {}
-    label: CodeServer-eth1<->Breakout0-port1
+    label: Breakout0-port8<->Internet-port
 lab:
   description: ''
   notes: ''
